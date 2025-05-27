@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StripeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -10,7 +11,7 @@ use Inertia\Inertia;
 // Guest Routes
 Route::get('/', [ProductController::class,'home'])->name('dashboard');
 
-Route::get('/dashboard', [ProductController::class,'home'])->middleware(['auth', 'verified']);
+Route::get('/dashboard', [ProductController::class,'home'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/product/{product:slug}', [ProductController::class,'show'])->name('product.show');
 
@@ -22,6 +23,7 @@ Route::controller(CartController::class)->group(function(){
 
 });
 
+Route::post('/stripe/webhook', [StripeController::class,'webhook'])->name('stripe.webhook');
 
 // Auth Routes
 Route::middleware('auth')->group(function () {
@@ -29,8 +31,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::middleware(['verifyed'])->group(function(){
+   Route::middleware(['verified'])->group(function(){
         Route::post('/cart/checkout',[CartController::class,'checkout'])->name('cart.checkout');
+        Route::get('/stripe/success',[StripeController::class,'success'])->name('stripe.success');
+        Route::get('/stripe/failure',[StripeController::class,'failure'])->name('stripe.failure');
 
     });
 });

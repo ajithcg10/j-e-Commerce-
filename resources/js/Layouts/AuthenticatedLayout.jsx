@@ -3,13 +3,12 @@ import { usePage } from "@inertiajs/react";
 import { useState } from "react";
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
-
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const { auth, errors } = usePage().props;
+    const user = auth.user;
+    console.log(errors, "as");
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-[#e7e9eb]">
             <Navbar />
 
             <main>{children}</main>

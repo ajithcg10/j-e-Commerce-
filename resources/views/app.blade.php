@@ -19,4 +19,8 @@
     <body class="font-sans antialiased">
         @inertia
     </body>
+    <script>
+    window.csrf_token = "{{ csrf_token() }}";
+</script>
+
 </html>

@@ -40,26 +40,22 @@ class  CartService
     }
     public function updateItemQuantity(int $productId ,int $quantity, $optionIds =null){
         if(Auth::check()){
-            $this->updateItemQuantityInDatabase($productId,$quantity,$optionIds);
-            
+            $this->updateItemQuantityInDatabase($productId,$quantity,is_string($optionIds) ? json_decode($optionIds, true) : $optionIds);
         }
         else{
-        //  dd($optionIds);
             $this->updateItemQuantityInCookies($productId, $quantity, json_decode($optionIds, true));
-
         }
 
     }
-    public function  removeItemFromCart(int $productId,$optionIds =null){
-         if(Auth::check()){
-            $this->reomveItemFromInDatabase($productId,$optionIds);
-        }
-        else{
-              
-            $this->reomveItemFromInCookies($productId, json_decode($optionIds,true));
-        }
-
+   public function removeItemFromCart(int $productId, $optionIds = null)
+{
+    if (Auth::check()) {
+        $this->reomveItemFromInDatabase($productId, is_string($optionIds) ? json_decode($optionIds, true) : $optionIds);
+    } else {
+        $this->reomveItemFromInCookies($productId, json_decode($optionIds, true));
     }
+}
+
     public function getCartItems():array
     {
         try {
@@ -108,7 +104,7 @@ class  CartService
                                 ]
                             ];
                         }
-
+                    
                     $cartItemData []=[
                         'id' => $cartItem['id'],
                         'product_id' =>$product->id,
@@ -118,7 +114,7 @@ class  CartService
                         'quantity' =>$cartItem['quantity'],
                         'option_ids' =>$cartItem['option_ids'],
                         'option' =>$optionInfo,
-                        'image' =>$imageUrl ?: $product->getFirstMediaUrl('image','small'),
+                        'image' =>$imageUrl ?: $product->getFirstMediaUrl('images','small'),
                         'user' => [
                             'id' =>$product->created_by,
                             'name' =>$product->user->vendor->store_name,
@@ -163,7 +159,7 @@ class  CartService
 
         $cartItem = CartItem::where('user_id',$userId)
         ->where('product_id',$productId)
-        ->where('variation_type_option_ids',json_encode($optionIds))
+         ->whereRaw('variation_types_option_ids::jsonb = ?', [json_encode($optionIds)])
         ->first();
         if($cartItem){
             $cartItem->update([
@@ -200,6 +196,7 @@ class  CartService
 
     // Ensure consistent key order in the options array
     ksort($optionIds);
+
 
     // Attempt to find an existing cart item with the same product and options
     $cartItem = CartItem::where('user_id', $userId)
@@ -265,8 +262,9 @@ class  CartService
     {
         $userId = Auth::id();
         ksort($optionIds);
-        CartItem::where('user_id',$userId)
-        ->where('product_id',$productId)->where('variation_type_option_ids',json_encode($optionIds))
+        CartItem::where('user_id', $userId)
+        ->where('product_id', $productId)
+        ->whereRaw('variation_types_option_ids::jsonb = ?', [json_encode($optionIds)])
         ->delete();
 
     }

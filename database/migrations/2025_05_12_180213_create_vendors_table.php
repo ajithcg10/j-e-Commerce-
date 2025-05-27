@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vendors', function (Blueprint $table) {
-            $table->bigInteger('user_id')->unsigned()->primary();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->id(); // Adds "id" column (bigint, auto-increment)
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('status');
             $table->string('store_name');
             $table->string('store_adress')->nullable();
             $table->string('cover_image')->nullable();
             $table->timestamps();
-        });
+});
+
     }
 
     /**

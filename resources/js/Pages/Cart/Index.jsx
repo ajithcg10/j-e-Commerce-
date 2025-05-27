@@ -12,7 +12,7 @@ export default function Index({
     totalQuantity,
     totalPrice,
 }) {
-    console.log(cartItems, totalPrice, totalQuantity);
+    console.log(cartItems, "ass");
 
     return (
         <AuthenticatedLayout>
@@ -45,18 +45,13 @@ export default function Index({
                                             >
                                                 <input
                                                     type="hidden"
-                                                    name="token"
+                                                    name="_token"
                                                     value={csrf_token}
                                                 />
-                                                <input
-                                                    type="hidden"
-                                                    name="vendor_id"
-                                                    value={item?.user?.id}
-                                                />
-                                                <button className="btn btn-sm btn-ghost">
-                                                    <CreditCardIcon className="size-6" />
-                                                    Pay only for this seller
-                                                </button>
+                                                <PrimaryButton className="rounded-full">
+                                                    <CreditCardIcon className="size-6 text-blue-500" />
+                                                    Proceed to checkout
+                                                </PrimaryButton>
                                             </form>
                                         </div>
 
@@ -81,10 +76,13 @@ export default function Index({
                         <form action={route("cart.checkout")} method="post">
                             <input
                                 type="hidden"
-                                name="token"
+                                name="_token" // ✅ this is required by Laravel
                                 value={csrf_token}
                             />
-                            <PrimaryButton className="rounded-full">
+                            <PrimaryButton
+                                type="submit"
+                                className="rounded-full"
+                            >
                                 <CreditCardIcon className="size-6 text-blue-500" />
                                 Proceed to checkout
                             </PrimaryButton>

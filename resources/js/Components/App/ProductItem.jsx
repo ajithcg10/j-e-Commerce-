@@ -4,13 +4,13 @@ import CurrencyFormatter from "../CurrencyFormatter";
 
 export default function ProductItem({ Product }) {
     return (
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card w-100  dark:bg-gray-800 shadow-xl">
             <Link href={route("product.show", Product?.slug)}>
                 <figure>
                     <img
                         src={Product?.images}
                         alt={Product?.title}
-                        className="asepect-square object-cover"
+                        className="w-100 max-h-[300px] object-cover rounded"
                     />
                 </figure>
             </Link>

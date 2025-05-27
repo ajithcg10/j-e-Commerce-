@@ -19,10 +19,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
+       
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
         ]);
+ 
     }
 
     /**
@@ -34,10 +36,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
         $user = Auth::user();
+        // dd($user);
         $route ="/";
         if($user->hasAnyRole([RolesEnum::Admin,RolesEnum::Vendor])){
             return Inertia::location('/admin');
         }else{
+       
             $route = route('dashboard',absolute:false);
         }
 

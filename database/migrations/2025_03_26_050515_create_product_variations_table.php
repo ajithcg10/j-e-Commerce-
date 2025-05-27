@@ -9,42 +9,38 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+  public function up(): void
+{
+    if (!Schema::hasTable('variation_types')) {
         Schema::create('variation_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')
-            ->index()
-            ->constrained('products')
-            ->cascadeOnDelete();
+            $table->foreignId('product_id')->index()->constrained('products')->cascadeOnDelete();
             $table->string('name');
             $table->string('type');
-
-            $table->timestamps();
-        });
-
-        Schema::create('variation_type_options', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('variation_type_id')
-            ->index()
-            ->constrained('variation_types')
-            ->cascadeOnDelete();
-            $table->string('name');
-           
-        });
-
-        Schema::create('product_variations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')
-            ->index()
-            ->constrained('products')
-            ->cascadeOnDelete();
-            $table->json('variation_type_option_ids');
-            $table->integer('quantity')->nullable();
-            $table->decimal('price',20,4)->nullable();
             $table->timestamps();
         });
     }
+
+    if (!Schema::hasTable('variation_type_options')) {
+        Schema::create('variation_type_options', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('variation_type_id')->index()->constrained('variation_types')->cascadeOnDelete();
+            $table->string('name');
+        });
+    }
+
+    if (!Schema::hasTable('product_variations')) {
+        Schema::create('product_variations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->index()->constrained('products')->cascadeOnDelete();
+            $table->json('variation_type_option_ids');
+            $table->integer('quantity')->nullable();
+            $table->decimal('price', 20, 4)->nullable();
+            $table->timestamps();
+        });
+    }
+}
+
 
     /**
      * Reverse the migrations.

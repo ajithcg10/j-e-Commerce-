@@ -18,6 +18,7 @@ export default function CartItems({ item }) {
             preserveScroll: true,
         });
     };
+    console.log(data, "Sas");
 
     const handleQuantityChange = (ev) => {
         setError("");
@@ -57,7 +58,7 @@ export default function CartItems({ item }) {
                         <Link href={productRoute(data)}>{data?.title}</Link>
                     </h3>
                     <div className="text-xs">
-                        {data?.options?.map((option) => (
+                        {data?.option?.map((option) => (
                             <div key={option?.id}>
                                 <strong className="font-bold mr-1">
                                     {option?.type?.name}:

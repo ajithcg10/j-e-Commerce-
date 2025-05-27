@@ -1,6 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import React from "react";
 import CurrencyFormatter from "../CurrencyFormatter";
+import { productRoute } from "@/helpers";
 
 export default function Navbar() {
     const { auth, totalPrice, totalQuantity, CartItems } = usePage().props;
@@ -61,10 +62,7 @@ export default function Navbar() {
                                             className={"flex gap-4  p-3 "}
                                         >
                                             <Link
-                                                href={route(
-                                                    "product.show",
-                                                    item.slug
-                                                )}
+                                                href={productRoute(item)}
                                                 className="w-16 h-16 justify-center items-center"
                                             >
                                                 <img
@@ -76,9 +74,8 @@ export default function Navbar() {
                                             <div className="flex-1">
                                                 <h3 className="mb-3 font-semibold ">
                                                     <Link
-                                                        href={route(
-                                                            "product.show",
-                                                            item.slug
+                                                        href={productRoute(
+                                                            item
                                                         )}
                                                     >
                                                         {" "}
