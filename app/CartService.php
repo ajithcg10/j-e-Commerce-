@@ -29,6 +29,7 @@ class  CartService
             ->toArray();
         }
         $price = $product->getPriceForOptions($optionIds);
+
        
         if(Auth::check()){
             $this->saveItemToDatabase($product->id,$quantity, $price ,$optionIds);
@@ -66,7 +67,7 @@ class  CartService
                 }
                 else{
                     $cartItems = $this->getCartItemsFromCookies();
-                    //   dd("aa");
+                    //   dd( $cartItems);
 
                 }  
 
@@ -130,7 +131,7 @@ class  CartService
             return $this->cachedCartItems;
         
         } catch (\Exception $e) {
-            // throw $e;
+            throw $e;
            Log::error($e->getMessage() . PHP_EOL . $e->getTraceAsString());
         }
         return [];
@@ -194,6 +195,7 @@ class  CartService
     $userId = Auth::id();
 
 
+
     // Ensure consistent key order in the options array
     ksort($optionIds);
 
@@ -223,24 +225,30 @@ class  CartService
     }
 
     // Store the cart item in a cookie
-    Cookie::queue(self::COOKIE_NAME, json_encode($cartItem), self::COOKIE_LIFETIME);
+    // Cookie::queue(self::COOKIE_NAME, json_encode($cartItem), self::COOKIE_LIFETIME);
 }
 
  protected function saveItemToCookies(int $productId, int $quantity, $price, array $optionIds): void
 {
     $cartItems = $this->getCartItemsFromCookies();
+
     ksort($optionIds); // to ensure consistent JSON
 
     $optionIdsJson = json_encode($optionIds);
     $itemFound = false;
 
-    foreach ($cartItems as &$item) {
+
+    if($itemFound){
+        foreach ($cartItems as $item) {
         if ($item['product_id'] === $productId && $item['option_ids'] === $optionIdsJson) {
             $item['quantity'] += $quantity;
             $itemFound = true;
             break;
         }
     }
+    }
+
+    
 
     if (!$itemFound) {
         $cartItems[] = [
@@ -250,6 +258,7 @@ class  CartService
             'price' => $price,
             'option_ids' => $optionIdsJson,
         ];
+        // dd($cartItems);
     }
 
     // Save back as a clean indexed array
@@ -324,6 +333,8 @@ class  CartService
 public function getCartItemsGrouped(): array
 {
     $cartItems = $this->getCartItems();
+    // dd($cartItems);
+    
 
     return collect($cartItems)->groupBy(fn($item)=>$item['user']['id'])->map(fn($items,$userId)=>[
         'user' => $items->first()['user'],
@@ -333,4 +344,8 @@ public function getCartItemsGrouped(): array
     ])->toArray();
 }
 
+public function clearCart($userId)
+{
+    CartItem::where('user_id', $userId)->delete();
+}
 }

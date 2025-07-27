@@ -38,10 +38,9 @@ class CartController extends Controller
     ]);
 
 
-
     $CartServices->addItemToCart($Product,$data['quantity'],$data['option_ids']);
 
-    return back()->with('sucess','product add to cart sucessfully!');
+    return back()->with('success','product add to cart sucessfully!');
   }
 
   public function update(Request $request,Product $Product,CartService $CartServices){
@@ -53,7 +52,7 @@ class CartController extends Controller
 
     $CartServices->updateItemQuantity($Product->id,$quantity,   $optionIds);
 
-    return back()->with('sucess' ,'Quantity was updated');
+    return back()->with('success' ,'Quantity was updated');
   }
   public function destroy(Request $request,Product $Product,CartService $CartServices){
 
@@ -61,7 +60,7 @@ class CartController extends Controller
 
     $CartServices->removeItemFromCart($Product->id, $optionIds);
 
-    return back()->with('sucess', 'product was removed from cart.');
+    return back()->with('success', 'product was removed from cart.');
   }
 
   public function checkout(Request $request, CartService $CartServices)
@@ -98,6 +97,7 @@ class CartController extends Controller
 
             $orders[] = $order;
 
+            //  dd($cartItems);
             foreach ($cartItems as $cartItem) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -106,7 +106,7 @@ class CartController extends Controller
                     'quantity' => $cartItem['quantity'],
                     'variation_type_option_ids' => $cartItem['option_ids'],
                 ]);
-
+               
                 $description = collect($cartItem['option'])->map(function($item) {
                     return "{$item['type']['name']} : {$item['name']}";
                 })->implode(', ');
@@ -142,7 +142,11 @@ class CartController extends Controller
                 $order->save();
             }
 
+            // Clear the cart after checkout session created
+            $CartServices->clearCart($request->user()->id);
+
             DB::commit();
+
             return redirect($session->url);
         }
     } catch (\Throwable $th) {

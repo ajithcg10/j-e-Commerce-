@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\CartService;
 use App\Http\Resources\OrderViewResources;
+use App\Mail\CheckOutCompeleted;
+use App\Mail\NewOrderMail;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\OrderStatusEnum;
@@ -10,6 +13,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Mail;
 use Stripe\StripeClient;
 use Stripe\Webhook;
 
@@ -40,10 +44,12 @@ class StripeController extends Controller
 
     public function failure()
     {
-        return response('Payment Failed'); // Or: return view('stripe.failure');
+           return Inertia::render('Stripe/Failure', [
+        'message' => 'Your payment could not be completed. Please try again or contact support.',
+    ]);
     }
 
-    public function webhook(Request $request)
+    public function webhook(Request $request ,CartService $cartService)
     {
         $stripe = new StripeClient(config('app.stripe_secret'));
         $endpointSecret = config('app.stripe_webhook_secret');
@@ -102,7 +108,7 @@ class StripeController extends Controller
                                 : $orderItem->variation_type_option_ids;
 
                             $product = $orderItem->product;
-                            dd($product);
+                          
 
                             if (is_array($options)) {
                                 sort($options);
@@ -162,8 +168,11 @@ class StripeController extends Controller
                         $order->website_commission = ($order->total_price - $order->online_payment_commission) * $platformFeePercentage / 100;
                         $order->vendor_subtotal = $order->total_price - $order->online_payment_commission - $order->website_commission;
                         $order->save();
-                    }
 
+                        Mail::to($order->vendorUser)->send(new NewOrderMail($order));
+                       
+                    }
+                    dd( Mail::to($orders[0]->user)->send(new CheckOutCompeleted($orders)));
                     break;
 
                 default:
@@ -178,4 +187,23 @@ class StripeController extends Controller
 
         return response('Webhook Handled', 200);
     }
+
+    public function connect()
+{
+    $user = Auth::user();
+
+    if (!$user->getStripeAccountId()) {
+        // Do not pass any type — defaults to 'standard'
+      $user->createStripeAccount(['type' => 'standard']);
+
+    }
+
+    if (!$user->isStripeAccountActive()) {
+        return redirect($user->getStripeAccountLink());
+    }
+
+    return back()->with('success', 'Your Stripe account is already connected.');
+}
+
+
 }

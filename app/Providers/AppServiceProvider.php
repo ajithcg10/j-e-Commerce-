@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\CartService;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Schedule;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Schedule::command('payout:vendors')->monthly(1,'00:00')->withoutOverlapping();
         Vite::prefetch(concurrency: 3);
+        
     }
 }

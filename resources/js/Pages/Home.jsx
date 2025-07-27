@@ -5,6 +5,7 @@ import { Head, Link } from "@inertiajs/react";
 
 export default function Home(products) {
     const data = products?.products?.data;
+    console.log(data, "aa");
 
     return (
         <AuthenticatedLayout>

@@ -28,7 +28,7 @@ export default function Success({ orders }) {
                 {data?.map((order, index) => (
                     <div
                         key={order.id || index}
-                        className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-4"
+                        className="bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 p-6 rounded-2xl shadow-lg mb-4 border border-gray-200 dark:border-gray-700"
                     >
                         <h3 className="text-2xl mb-3">Order Summary</h3>
 

@@ -29,9 +29,9 @@ class ProductListResource extends JsonResource
             ],
             'department' => [
                 'id'=> $this->user->id,
-                'name' => $this->user->name,
-                
+                'name' => $this->user->name,  
             ]
+            
             // add any other fields you need
         ];
     }

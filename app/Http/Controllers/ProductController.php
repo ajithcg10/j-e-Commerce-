@@ -14,9 +14,11 @@ class ProductController extends Controller
         ->published()
         ->paginate(12);
 
+        // dd($products);
         return Inertia::render('Home',
           [
             'products' => ProductListResource::collection($products),
+            
           ]
           );
     }

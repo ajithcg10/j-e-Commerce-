@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\CartService;
+use App\Http\Resources\AuthUserResources;
+use Auth;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,13 +40,17 @@ class HandleInertiaRequests extends Middleware
          return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? AuthUserResources::make($request->user()) : null,
             ],
-            'success'=> session('success'),
+            'success'=> [
+                'message' => session('success'),
+                'time'=> microtime(true),
+            ],
             'error'=> session('error'),
             'CartItems' => $cartItems,
             'totalPrice' => $totalPrice,
             'totalQuantity' =>$totalQuantity,
+              'token' => csrf_token(),
         ];
     }
 }

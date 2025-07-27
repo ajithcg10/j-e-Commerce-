@@ -18,7 +18,7 @@ export default function Index({
         <AuthenticatedLayout>
             <Head title="You Cart" />
             <div className="conatiner mx-auto p-8 flex  flex-col lg:flex-row gap-4">
-                <div className="card flex-1 bg-white dark:bg-gray-800 order-2 lg:order-1">
+                <div className="card flex-1 bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 order-2 lg:order-1">
                     <div className="card-body">
                         <h2 className="text-lg font-bold">shopping cart</h2>
                         <div className="my-4">
@@ -69,7 +69,7 @@ export default function Index({
                         </div>
                     </div>
                 </div>
-                <div className=" card bg-white dark:bg-gray-800 lg:min-w-[260px] order-1 lg:order-2">
+                <div className=" card bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 lg:min-w-[260px] order-1 lg:order-2">
                     <div className="card-body">
                         SubTotal ({totalQuantity} items) :&nbsp;
                         <CurrencyFormatter amount={totalPrice} />

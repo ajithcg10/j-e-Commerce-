@@ -13,7 +13,11 @@ export default function Navbar() {
         <div className="navbar bg-[#f3f4f6] shadow-sm">
             <div className="flex-1">
                 <Link className="text-[#000] text-xl" href="/">
-                    JStore
+                    <img
+                        src="/images/logo.png"
+                        alt="Logo"
+                        className="w-[80px] h-[80px] rounded-full"
+                    />
                 </Link>
             </div>
             <div className="flex gap-4">
@@ -42,7 +46,7 @@ export default function Navbar() {
                     </div>
                     <div
                         tabIndex={0}
-                        className="card card-compact  dropdown-content bg-base-100 z-1 mt-3 w-[500px] shadow"
+                        className="card card-compact  dropdown-content bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 z-1 mt-3 w-[500px] shadow"
                     >
                         <div className="card-body">
                             <span className="text-lg font-bold">
@@ -132,7 +136,7 @@ export default function Navbar() {
                         </div>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                            className="menu menu-sm dropdown-content bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 rounded-box z-1 mt-3 w-52 p-2 shadow"
                         >
                             <li>
                                 <Link

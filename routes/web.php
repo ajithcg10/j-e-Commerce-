@@ -4,9 +4,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StripeController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\VendoerController;
+use App\RolesEnum;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 // Guest Routes
 Route::get('/', [ProductController::class,'home'])->name('dashboard');
@@ -35,6 +35,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/cart/checkout',[CartController::class,'checkout'])->name('cart.checkout');
         Route::get('/stripe/success',[StripeController::class,'success'])->name('stripe.success');
         Route::get('/stripe/failure',[StripeController::class,'failure'])->name('stripe.failure');
+
+        Route::post('/become-vendor',[VendoerController::class,'store'])->name(('vendor.store'));
+
+        Route::post('/stripe/connect',[StripeController::class,'connect'])->name('stripe.connect')->middleware(['role:' . RolesEnum::Vendor->value]);
 
     });
 });
